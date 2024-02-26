@@ -7,7 +7,7 @@ this is a repository for chinese text normalization (no longer maintained).
 ### Git Clone Repo ###
 
 git clone this repo to the root directory of your project which need to use it.
-
+    pip install opencc-python-reimplemented
     cd /path/to/proj
     git clone https://github.com/Joee1995/chn-text-norm.git
 
