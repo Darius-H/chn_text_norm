@@ -27,4 +27,5 @@ proj                     # root of your project
     from chn_text_norm.text import *
     
     raw_text = 'your raw text'
-    text = Text(raw_text=raw_text).normalize()
+    normalizer = Text()
+    text = normalizer(raw_text=raw_text)
