@@ -7,7 +7,7 @@ __author__ = 'Zhiyang Zhou <zyzhou@stu.xmu.edu.cn>'
 __data__ = '2019-05-03'
 
 import re
-
+from opencc import OpenCC
 from chn_text_norm.cardinal import Cardinal
 from chn_text_norm.digit import Digit
 from chn_text_norm.telephone import TelePhone
@@ -34,6 +34,7 @@ class Text:
 
     def __init__(self, norm_text=None):
         self.norm_text = norm_text
+        self.cc = OpenCC('t2s') 
 
     def _particular(self):
         text = self.norm_text
@@ -126,6 +127,8 @@ class Text:
             for matcher in matchers:
                 text = text.replace(matcher, Digit(digit=matcher).digit2chntext(), 1)
 
+        # 繁体转简体
+        text = self.cc(text)
         self.norm_text = text
         self._particular()
 
