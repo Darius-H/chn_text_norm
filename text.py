@@ -32,8 +32,7 @@ class Text:
     Text类
     """
 
-    def __init__(self, raw_text, norm_text=None):
-        self.raw_text = '^' + raw_text + '$'
+    def __init__(self, norm_text=None):
         self.norm_text = norm_text
 
     def _particular(self):
@@ -47,8 +46,8 @@ class Text:
         self.norm_text = text
         return self.norm_text
 
-    def normalize(self):
-        text = self.raw_text
+    def normalize(self,raw_text):
+        text = raw_text
 
         # 规范化日期
         pattern = re.compile(r"\D+((([089]\d|(19|20)\d{2})年)?(\d{1,2}月(\d{1,2}[日号])?)?)")
@@ -111,14 +110,6 @@ class Text:
             for matcher in matchers:
                 text = text.replace(matcher[0], Cardinal(cardinal=matcher[0]).cardinal2chntext(), 1)
 
-        # 规范化数字编号
-        pattern = re.compile(r"(\d{4,32})")
-        matchers = pattern.findall(text)
-        if matchers:
-            # print('digit')
-            for matcher in matchers:
-                text = text.replace(matcher, Digit(digit=matcher).digit2chntext(), 1)
-
         # 规范化纯数
         pattern = re.compile(r"(\d+(\.\d+)?)")
         matchers = pattern.findall(text)
@@ -127,22 +118,32 @@ class Text:
             for matcher in matchers:
                 text = text.replace(matcher[0], Cardinal(cardinal=matcher[0]).cardinal2chntext(), 1)
 
+        # 规范化数字编号
+        pattern = re.compile(r"(\d{4,32})")
+        matchers = pattern.findall(text)
+        if matchers:
+            # print('digit')
+            for matcher in matchers:
+                text = text.replace(matcher, Digit(digit=matcher).digit2chntext(), 1)
+
         self.norm_text = text
         self._particular()
 
         return self.norm_text.lstrip('^').rstrip('$')
 
+    def __call__(self,raw_text):
+        return self.normalize(raw_text)
 
 if __name__ == '__main__':
-
+    normalizer = Text()
     # 测试程序
-    print(Text(raw_text='固话：0595-23865596或23880880。').normalize())
-    print(Text(raw_text='手机：+86 19859213959或15659451527。').normalize())
-    print(Text(raw_text='分数：32477/76391。').normalize())
-    print(Text(raw_text='百分数：80.03%。').normalize())
-    print(Text(raw_text='编号：31520181154418。').normalize())
-    print(Text(raw_text='纯数：2983.07克或12345.60米。').normalize())
-    print(Text(raw_text='日期：1999年2月20日或09年3月15号。').normalize())
-    print(Text(raw_text='金钱：12块5，34.5元，20.1万').normalize())
-    print(Text(raw_text='特殊：O2O或B2C。').normalize())
+    print(normalizer(raw_text='固话：0595-23865596或23880880。'))
+    print(normalizer(raw_text='手机：+86 19859213959或15659451527。'))
+    print(normalizer(raw_text='分数：32477/76391。'))
+    print(normalizer(raw_text='百分数：80.03%。'))
+    print(normalizer(raw_text='编号：31520181154418。'))
+    print(normalizer(raw_text='纯数：2983.07克或12345.60米。'))
+    print(normalizer(raw_text='日期：1999年2月20日或09年3月15号。'))
+    print(normalizer(raw_text='金钱：12块5，34.5元，20.1万'))
+    print(normalizer(raw_text='特殊：O2O或B2C。'))
 
