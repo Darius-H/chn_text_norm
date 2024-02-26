@@ -128,7 +128,7 @@ class Text:
                 text = text.replace(matcher, Digit(digit=matcher).digit2chntext(), 1)
 
         # 繁体转简体
-        text = self.cc(text)
+        text = self.cc.convert(text)
         self.norm_text = text
         self._particular()
 
